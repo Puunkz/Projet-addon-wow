@@ -1,0 +1,11 @@
+## Interface: 111561
+## Title: BoostMaster
+## Notes: Assistant de boost communautaire
+## Author: Puunkz
+## Version: 0.1
+
+BoostMaster.lua
+UI.lua
+Events.lua
+Data.lua
+Communication.lua

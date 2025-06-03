@@ -1,0 +1,5 @@
+Le but de l'addon est d'être un véritable assistant pour les communauté de boosting, dans cette addon on aurait:
+- Un onglet booster ou sont affiché les client et leurs commandes (validé / en cours / en attente): clés de donjon avec le nom du donjon, le niveau de la clé ainsi que le prix global + la part de chaque booster + le nom de l'advertiser, meme chose pour du raid.
+- Un onglet "apply" ou apparaissent toute les clés posté par les advertiser en attente ou les boosters pourront s'inscrire pour participer au boost (avec la possibilité de pouvoir voir le nombre de joueurs inscrit / qu'est ce qui est demandé pour completer le groupe (classe particuliere / Spell utilitaire ) 
+- Un onglet "wallet" ou le booster vois le nombre de gold gagné en moyenne par clé / par jour / par semaine / par mois avec un graphique également.
+- Un onglet "advertising" ou l'advertiser peut : envoyé un message prédéfinie au client pour les tarifs ainsi que crée la commande et pouvoir l'envoyé aux boosters dans l'onglet boosters / apply.
