@@ -77,13 +77,13 @@ function BoostMaster:ShowTab(name)
             header:SetSize(540, 20)
             header:SetPoint("TOPLEFT", 10, -5)
 
-            AddText(header, "Client", 80, 0)
-            AddText(header, "Type", 50, 90)
-            AddText(header, "Détail", 150, 145)
-            AddText(header, "Prix", 50, 300)
-            AddText(header, "Part", 50, 355)
-            AddText(header, "Adv.", 80, 410)
-            AddText(header, "Statut", 70, 495)
+            AddText(header, "Client :", 80, 0)
+            AddText(header, "Type :", 50, 90)
+            AddText(header, "Détail :", 150, 145)
+            AddText(header, "Prix :", 50, 300)
+            AddText(header, "Part :", 50, 355)
+            AddText(header, "Adv. :", 80, 410)
+            AddText(header, "Statut :", 70, 495)
 
             BM.tabs["BoostersScroll"] = scrollFrame
             BM.tabs["BoostersContent"] = content
@@ -221,7 +221,7 @@ elseif name == "Advertising" then
     -- Header au-dessus de la liste
     local header = CreateFrame("Frame", nil, tab)
     header:SetSize(540, 20)
-    header:SetPoint("TOPLEFT", 10, -5)
+    header:SetPoint("TOPLEFT", 10, -5) -- en bas à gauche du tab
 
     local function AddHeaderText(text, width, x)
         local fs = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
@@ -231,16 +231,16 @@ elseif name == "Advertising" then
         fs:SetText(text)
     end
 
-    AddHeaderText("Type", 50, 0)
-    AddHeaderText("Détail", 150, 60)
-    AddHeaderText("Adv.", 80, 210)
-    AddHeaderText("Prix", 70, 300)
-    AddHeaderText("Statut", 70, 380)
+    AddHeaderText("Type :", 50, 0)
+    AddHeaderText("Détail :", 150, 60)
+    AddHeaderText("Adv. :", 80, 210)
+    AddHeaderText("Prix :", 70, 300)
+    AddHeaderText("Statut :", 70, 380)
 
     -- ScrollFrame : liste des clés/raid en cours
     local scrollFrame = CreateFrame("ScrollFrame", nil, tab, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", 10, -30)
-    scrollFrame:SetPoint("BOTTOMRIGHT", -30, -120) -- réduit pour laisser place en bas
+    scrollFrame:SetPoint("TOPLEFT", 10, -30) -- en haut à gauche du tab
+    scrollFrame:SetPoint("BOTTOMRIGHT", -30, 165) -- réduit pour laisser place en bas
 
     local content = CreateFrame("Frame", nil, scrollFrame)
     content:SetSize(1, 1)
@@ -252,8 +252,8 @@ elseif name == "Advertising" then
 
     -- Fenêtre création clé/raid en bas
     local form = CreateFrame("Frame", nil, tab)
-    form:SetSize(560, 130)
-    form:SetPoint("TOPLEFT", 10, -10)  -- en bas à gauche
+    form:SetSize(560, 150)
+    form:SetPoint("BOTTOMLEFT", 10, 10)  -- en bas à gauche
     form.bg = form:CreateTexture(nil, "BACKGROUND")
     form.bg:SetAllPoints()
     form.bg:SetColorTexture(0.15, 0.15, 0.15, 0.8)
@@ -268,18 +268,18 @@ elseif name == "Advertising" then
     CreateLabel(form, "Nom client :", 10, -10)
     CreateLabel(form, "Donjon :", 200, -10)
     CreateLabel(form, "Niveau clé :", 350, -10)
-    CreateLabel(form, "Raid :", 10, -60)
-    CreateLabel(form, "Difficulté :", 200, -60)
-    CreateLabel(form, "Prix :", 420, -10)
+    CreateLabel(form, "Raid :", 10, -65)
+    CreateLabel(form, "Difficulté :", 200, -65)
+    CreateLabel(form, "Prix :", 430, -10)
 
     local clientInput = CreateFrame("EditBox", nil, form, "InputBoxTemplate")
     clientInput:SetSize(150, 25)
-    clientInput:SetPoint("TOPLEFT", form, "TOPLEFT", 10, -30)
+    clientInput:SetPoint("TOPLEFT", form, "TOPLEFT", 15, -30)
     clientInput:SetAutoFocus(false)
 
     local donjonsSaison = { "Darkflame Cleft", "Cinderbrew Meadery", "The Rookery", "Priory of the Sacred Flame", "Operation: Floodgate", "Theater of Pain", "Operation: Mechagon - Workshop", "The MOTHERLODE!!" }
     local dungeonDropdown = CreateFrame("Frame", "DungeonDropdown", form, "UIDropDownMenuTemplate")
-    dungeonDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 200, -30)
+    dungeonDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 180, -30)
     UIDropDownMenu_SetWidth(dungeonDropdown, 120)
     UIDropDownMenu_SetText(dungeonDropdown, donjonsSaison[1])
 
@@ -301,8 +301,8 @@ elseif name == "Advertising" then
     end
 
     local niveauDropdown = CreateFrame("Frame", "NiveauDropdown", form, "UIDropDownMenuTemplate")
-    niveauDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 350, -30)
-    UIDropDownMenu_SetWidth(niveauDropdown, 80)
+    niveauDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 330, -30)
+    UIDropDownMenu_SetWidth(niveauDropdown, 42)
     UIDropDownMenu_SetText(niveauDropdown, niveauxCle[1])
     UIDropDownMenu_Initialize(niveauDropdown, function(self, level, menuList)
         for i, niveau in ipairs(niveauxCle) do
@@ -318,9 +318,10 @@ elseif name == "Advertising" then
 
     local raidSaison = { "Liberation of Undermine" }
     local raidDropdown = CreateFrame("Frame", "RaidDropdown", form, "UIDropDownMenuTemplate")
-    raidDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 10, -80)
+    raidDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", -10, -85)
     UIDropDownMenu_SetWidth(raidDropdown, 150)
-    UIDropDownMenu_SetText(raidSaison[1])
+    UIDropDownMenu_SetText(raidDropdown, raidSaison[1])
+
     UIDropDownMenu_Initialize(raidDropdown, function(self, level, menuList)
         for i, raid in ipairs(raidSaison) do
             local info = UIDropDownMenu_CreateInfo()
@@ -335,9 +336,10 @@ elseif name == "Advertising" then
 
     local diffycultesRaid = { "Normal", "Héroïque", "Mythique" }
     local difficultyDropdown = CreateFrame("Frame", "DifficultyDropdown", form, "UIDropDownMenuTemplate")
-    difficultyDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 200, -80)
-    UIDropDownMenu_SetWidth(difficultyDropdown, 100)
-    UIDropDownMenu_SetText(diffycultesRaid[1])
+    difficultyDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 180, -85)
+    UIDropDownMenu_SetWidth(difficultyDropdown, 80)
+    UIDropDownMenu_SetText(difficultyDropdown ,diffycultesRaid[1])
+
     UIDropDownMenu_Initialize(difficultyDropdown, function(self, level, menuList)
         for i, diff in ipairs(diffycultesRaid) do
             local info = UIDropDownMenu_CreateInfo()
@@ -352,13 +354,13 @@ elseif name == "Advertising" then
 
     local priceInput = CreateFrame("EditBox", nil, form, "InputBoxTemplate")
     priceInput:SetSize(80, 25)
-    priceInput:SetPoint("TOPLEFT", form, "TOPLEFT", 420, -30)
+    priceInput:SetPoint("TOPLEFT", form, "TOPLEFT", 435, -30)
     priceInput:SetAutoFocus(false)
     priceInput:SetNumeric(true)
 
     local createButton = CreateFrame("Button", nil, form, "UIPanelButtonTemplate")
     createButton:SetSize(100, 25)
-    createButton:SetPoint("TOPLEFT", form, "TOPLEFT", 220, -65)
+    createButton:SetPoint("TOPLEFT", form, "TOPLEFT", 220, -120)
     createButton:SetText("Créer clé/raid")
     createButton:SetScript("OnClick", function()
         local client = clientInput:GetText()
@@ -404,7 +406,7 @@ elseif name == "Advertising" then
     -- Conteneur pour boutons juste au-dessus du form
     local btnContainer = CreateFrame("Frame", nil, tab)
     btnContainer:SetSize(560, 60)
-    btnContainer:SetPoint("BOTTOMLEFT", 10, 120) -- juste au-dessus du form (form est à 10px du bas, form hauteur 100px, donc 110px + petit espace)
+    btnContainer:SetPoint("BOTTOMLEFT", 425, 10) 
 
     -- Bouton personnaliser message
     local personalizeBtn = CreateFrame("Button", nil, btnContainer, "UIPanelButtonTemplate")
