@@ -1,4 +1,3 @@
--- UI.lua
 local BM = BoostMaster
 
 function BoostMaster:CreateUI()
@@ -37,19 +36,17 @@ function BoostMaster:CreateUI()
     end
 
     BM.mainFrame = f
-    BM.tabs = {} -- initialise le cache des onglets
+    BM.tabs = {}
     BoostMaster:ShowTab("Boosters")
 end
 
 function BoostMaster:ShowTab(name)
-    -- Cache l'onglet courant s'il existe
     if BM.currentTab then
         BM.currentTab:Hide()
     end
 
     BM.currentTabName = name
 
-    -- Crée l'onglet s'il n'existe pas déjà
     if not BM.tabs[name] then
         local tab = CreateFrame("Frame", nil, BM.mainFrame)
         tab:SetSize(580, 330)
@@ -68,16 +65,14 @@ function BoostMaster:ShowTab(name)
         end
 
         if name == "Boosters" then
-            -- ScrollFrame & contenu
             local scrollFrame = CreateFrame("ScrollFrame", nil, tab, "UIPanelScrollFrameTemplate")
             scrollFrame:SetPoint("TOPLEFT", 10, -30)
             scrollFrame:SetPoint("BOTTOMRIGHT", -30, 10)
 
             local content = CreateFrame("Frame", nil, scrollFrame)
-            content:SetSize(1, 1) -- ajusté dynamiquement
+            content:SetSize(1, 1)
             scrollFrame:SetScrollChild(content)
 
-            -- Header fixe au-dessus du scroll
             local header = CreateFrame("Frame", nil, tab)
             header:SetSize(540, 20)
             header:SetPoint("TOPLEFT", 10, -5)
@@ -94,7 +89,6 @@ function BoostMaster:ShowTab(name)
             BM.tabs["BoostersContent"] = content
             BM.tabs["BoostersHeader"] = header
 
-            -- On affiche les boosts valides (en cours ou validé)
             local visibleBoosts = {}
             for _, boost in ipairs(BM.boostData) do
                 if boost.status == "En cours" or boost.status == "Validé" then
@@ -221,14 +215,6 @@ function BoostMaster:ShowTab(name)
             CreateBar(yStart - 90, goldData.goldPerMonth)
 
         elseif name == "Advertising" then
-            local scrollFrame = CreateFrame("ScrollFrame", nil, tab, "UIPanelScrollFrameTemplate")
-            scrollFrame:SetPoint("TOPLEFT", 10, -10)
-            scrollFrame:SetPoint("BOTTOMRIGHT", -30, 10)
-
-            local content = CreateFrame("Frame", nil, scrollFrame)
-            content:SetSize(1, 1)
-            scrollFrame:SetScrollChild(content)
-
             local header = CreateFrame("Frame", nil, tab)
             header:SetSize(540, 20)
             header:SetPoint("TOPLEFT", 10, -5)
@@ -247,30 +233,114 @@ function BoostMaster:ShowTab(name)
             AddHeaderText("Prix", 70, 300)
             AddHeaderText("Statut", 70, 380)
 
-            local function AddText(frame, text, width, x)
-                local fs = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-                fs:SetWidth(width)
-                fs:SetJustifyH("LEFT")
-                fs:SetText(text or "")
-                fs:SetPoint("LEFT", frame, "LEFT", x, 0)
-                return fs
+            local scrollFrame = CreateFrame("ScrollFrame", nil, tab, "UIPanelScrollFrameTemplate")
+            scrollFrame:SetPoint("TOPLEFT", 10, -30)
+            scrollFrame:SetPoint("BOTTOMRIGHT", -30, 10)
+
+            local content = CreateFrame("Frame", nil, scrollFrame)
+            content:SetSize(1, 1)
+            scrollFrame:SetScrollChild(content)
+
+            BM.tabs["AdvertisingScroll"] = scrollFrame
+            BM.tabs["AdvertisingContent"] = content
+            BM.tabs["AdvertisingHeader"] = header
+
+                -- Formulaire création clé/raid
+    local form = CreateFrame("Frame", nil, tab)
+    form:SetSize(560, 100)
+    form:SetPoint("TOPLEFT", 10, -10)
+    form.bg = form:CreateTexture(nil, "BACKGROUND")
+    form.bg:SetAllPoints()
+    form.bg:SetColorTexture(0.15, 0.15, 0.15, 0.8)
+
+    local CreateLabel = function(parent, text, x, y)
+        local label = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        label:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
+        label:SetText(text)
+        return label
+    end
+
+    CreateLabel(form, "Nom client :", 10, -10)
+    CreateLabel(form, "Donjon :", 200, -10)
+    CreateLabel(form, "Prix :", 420, -10)
+
+    local clientInput = CreateFrame("EditBox", nil, form, "InputBoxTemplate")
+    clientInput:SetSize(150, 25)
+    clientInput:SetPoint("TOPLEFT", form, "TOPLEFT", 10, -30)
+    clientInput:SetAutoFocus(false)
+
+    local dungeonDropdown = CreateFrame("Frame", "DungeonDropdown", form, "UIDropDownMenuTemplate")
+    dungeonDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 200, -30)
+
+    local donjonsSaison = { "Darkflame Cleft", "Cinderbrew Meadery", "The Rookery", "Priory of the Sacred Flame", "Operation: Floodgate", "Theater of Pain", "Operation: Mechagon - Workshop", "The MOTHERLODE!!" } -- Remplacer par la vraie liste de donjons
+
+    UIDropDownMenu_SetWidth(dungeonDropdown, 120)
+    UIDropDownMenu_SetText(dungeonDropdown, donjonsSaison[1])
+
+    UIDropDownMenu_Initialize(dungeonDropdown, function(self, level, menuList)
+        for _, donjon in ipairs(donjonsSaison) do
+            local info = UIDropDownMenu_CreateInfo()
+            info.text = donjon
+            info.checked = (UIDropDownMenu_GetText(dungeonDropdown) == donjon)
+            info.func = function()
+                UIDropDownMenu_SetSelectedID(dungeonDropdown, _)
             end
+            UIDropDownMenu_AddButton(info)
+        end
+    end)
 
-            for i, cmd in ipairs(BM.advertisingData.commands or {}) do
-                local row = CreateFrame("Frame", nil, content)
-                row:SetSize(540, 20)
-                row:SetPoint("TOPLEFT", content, "TOPLEFT", 0, -((i-1)*22))
+    local priceInput = CreateFrame("EditBox", nil, form, "InputBoxTemplate")
+    priceInput:SetSize(80, 25)
+    priceInput:SetPoint("TOPLEFT", form, "TOPLEFT", 420, -30)
+    priceInput:SetAutoFocus(false)
+    priceInput:SetNumeric(true)
 
-                AddText(row, cmd.type, 50, 0)
-                AddText(row, cmd.detail, 150, 60)
-                AddText(row, cmd.advertiser, 80, 210)
-                AddText(row, cmd.price, 70, 300)
-                AddText(row, cmd.status, 70, 380)
+    local createButton = CreateFrame("Button", nil, form, "UIPanelButtonTemplate")
+    createButton:SetSize(100, 25)
+    createButton:SetPoint("TOPLEFT", form, "TOPLEFT", 220, -65)
+    createButton:SetText("Créer clé/raid")
+    createButton:SetScript("OnClick", function()
+        local client = clientInput:GetText()
+        local donjon = UIDropDownMenu_GetText(dungeonDropdown)
+        local prix = tonumber(priceInput:GetText())
+        if client == "" or not prix or prix <= 0 then
+            print("BoostMaster : Veuillez remplir correctement tous les champs.")
+            return
+        end
+        -- Ajouter la clé/raid en attente dans BM.advertisingData
+        table.insert(BM.advertisingData, {
+            client = client,
+            type = "Clé/Raid",
+            detail = donjon,
+            advertiser = UnitName("player"),
+            price = prix,
+            status = "En attente",
+        })
+        clientInput:SetText("")
+        priceInput:SetText("")
+        BoostMaster:RefreshAdvertisingTab()
+    end)
 
-                row:Show()
-            end
+    -- Bouton personnaliser message
+    local personalizeBtn = CreateFrame("Button", nil, tab, "UIPanelButtonTemplate")
+    personalizeBtn:SetSize(140, 25)
+    personalizeBtn:SetPoint("TOPLEFT", 380, -10)
+    personalizeBtn:SetText("Personnaliser message")
+    personalizeBtn:SetScript("OnClick", function()
+        StaticPopup_Show("BOOSTMASTER_PERSONALIZE_MESSAGE")
+    end)
 
-            content:SetHeight(#(BM.advertisingData.commands or {}) * 22)
+    -- Bouton envoyer message dans le chat
+    local sendMsgBtn = CreateFrame("Button", nil, tab, "UIPanelButtonTemplate")
+    sendMsgBtn:SetSize(140, 25)
+    sendMsgBtn:SetPoint("TOPLEFT", 380, -45)
+    sendMsgBtn:SetText("Envoyer message au chat")
+    sendMsgBtn:SetScript("OnClick", function()
+        local msg = BM.customMessage or "Tarifs disponibles, contactez-moi !"
+        ChatEdit_InsertLink(msg)
+    end)
+
+            BoostMaster:RefreshAdvertisingTab()
 
         elseif name == "Credits" then
             local creditText = [[
@@ -282,19 +352,67 @@ Développé par Puunkz
 - Suivi du portefeuille
 - Annonces et communication
 
-Merci d'utiliser BoostMaster!
+Merci d'utiliser BoostMaster
             ]]
-            local label = tab:CreateFontString(nil, "OVERLAY", "GameFontHighlight")
-            label:SetPoint("TOPLEFT", 20, -20)
-            label:SetJustifyH("LEFT")
-            label:SetWidth(540)
-            label:SetText(creditText)
+
+            local textLabel = tab:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+            textLabel:SetPoint("TOPLEFT", 20, -30)
+            textLabel:SetWidth(540)
+            textLabel:SetJustifyV("TOP")
+            textLabel:SetJustifyH("LEFT")
+            textLabel:SetText(creditText)
         end
 
         BM.tabs[name] = tab
     end
 
-    -- Affiche l'onglet actif
     BM.currentTab = BM.tabs[name]
     BM.currentTab:Show()
+end
+
+-- Fonction pour rafraîchir l'onglet Advertising
+function BoostMaster:RefreshAdvertisingTab()
+    local content = BM.tabs["AdvertisingContent"]
+    if not content then return end
+
+    -- Nettoyer contenu précédent
+    for _, child in ipairs({content:GetChildren()}) do
+        child:Hide()
+        child:SetParent(nil)
+    end
+
+    local lineHeight = 24
+    local advertisingData = BM.advertisingData or {}
+
+    content:SetHeight(#advertisingData * lineHeight)
+    content:SetWidth(540)
+
+    local previousRow = nil
+    local function AddText(frame, text, width, x)
+        local fs = frame:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+        fs:SetPoint("LEFT", frame, "LEFT", x, 0)
+        fs:SetWidth(width)
+        fs:SetJustifyH("LEFT")
+        fs:SetText(text or "")
+        return fs
+    end
+
+    for i, adv in ipairs(advertisingData) do
+        local row = CreateFrame("Frame", nil, content)
+        row:SetSize(540, lineHeight)
+        if i == 1 then
+            row:SetPoint("TOPLEFT", content, "TOPLEFT", 0, 0)
+        else
+            row:SetPoint("TOPLEFT", previousRow, "BOTTOMLEFT", 0, 0)
+        end
+
+        AddText(row, adv.type, 50, 0)
+        AddText(row, adv.detail, 150, 60)
+        AddText(row, adv.advertiser, 80, 210)
+        AddText(row, adv.price, 70, 300)
+        AddText(row, adv.status, 70, 380)
+
+        row:Show()
+        previousRow = row
+    end
 end
