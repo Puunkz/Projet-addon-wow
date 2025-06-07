@@ -62,9 +62,9 @@ BM.walletData = {
 
 BM.advertisingData = {
     predefinedMessages = {
-        "Tarif boost donjon : 300k par clé",
-        "Tarif raid NM : 1.2M par run",
-        "Contactez Zephia pour réserver votre place",
+        "Tarif boost donjon : 300k par clé" .. "," 
+       .. "Tarif raid MM : 1.2M par run" .. ","
+       .. "Contactez XXXXX pour réserver votre place", 
     },
     commands = {
         {
