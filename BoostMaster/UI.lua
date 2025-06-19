@@ -214,349 +214,349 @@ function BoostMaster:ShowTab(name)
             CreateBar(yStart - 60, goldData.goldPerWeek)
             CreateBar(yStart - 90, goldData.goldPerMonth)
 
-elseif name == "Advertising" then
-    local tabHeight = 330
-    local tabWidth = 580
+        elseif name == "Advertising" then
+            local tabHeight = 330
+            local tabWidth = 580
 
-    -- Header au-dessus de la liste
-    local header = CreateFrame("Frame", nil, tab)
-    header:SetSize(540, 20)
-    header:SetPoint("TOPLEFT", 10, -5) -- en bas à gauche du tab
+            -- Header au-dessus de la liste
+            local header = CreateFrame("Frame", nil, tab)
+            header:SetSize(540, 20)
+            header:SetPoint("TOPLEFT", 10, -5) -- en bas à gauche du tab
 
-    local function AddHeaderText(text, width, x)
-        local fs = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        fs:SetPoint("LEFT", header, "LEFT", x, 0)
-        fs:SetWidth(width)
-        fs:SetJustifyH("LEFT")
-        fs:SetText(text)
-    end
-
-    AddHeaderText("Type :", 50, 0)
-    AddHeaderText("Détail :", 150, 60)
-    AddHeaderText("Adv. :", 80, 210)
-    AddHeaderText("Prix :", 70, 300)
-    AddHeaderText("Statut :", 70, 380)
-    AddHeaderText("Client :", 80, 460)
-
-    -- ScrollFrame : liste des clés/raid en cours
-    local scrollFrame = CreateFrame("ScrollFrame", nil, tab, "UIPanelScrollFrameTemplate")
-    scrollFrame:SetPoint("TOPLEFT", 10, -30) -- en haut à gauche du tab
-    scrollFrame:SetPoint("BOTTOMRIGHT", -30, 165) -- réduit pour laisser place en bas
-
-    local content = CreateFrame("Frame", nil, scrollFrame)
-    content:SetSize(1, 1)
-    scrollFrame:SetScrollChild(content)
-
-    BM.tabs["AdvertisingScroll"] = scrollFrame
-    BM.tabs["AdvertisingContent"] = content
-    BM.tabs["AdvertisingHeader"] = header
-
-    -- Fenêtre création clé/raid en bas
-    local form = CreateFrame("Frame", nil, tab)
-    form:SetSize(560, 150)
-    form:SetPoint("BOTTOMLEFT", 10, 10)  -- en bas à gauche
-    form.bg = form:CreateTexture(nil, "BACKGROUND")
-    form.bg:SetAllPoints()
-    form.bg:SetColorTexture(0.15, 0.15, 0.15, 0.8)
-
-    local CreateLabel = function(parent, text, x, y)
-        local label = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
-        label:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
-        label:SetText(text)
-        return label
-    end
-
-    -- Menus déroulants et champs de saisie
-    local types = { "Donjon", "Raid" }
-    local typeDropdown = CreateFrame("Frame", "TypeDropdown", form, "UIDropDownMenuTemplate")
-    typeDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 330, -85)
-    UIDropDownMenu_SetWidth(typeDropdown, 60)
-
-    local donjonsSaison = { "Darkflame Cleft", "Cinderbrew Meadery", "The Rookery", "Priory of the Sacred Flame", "Operation: Floodgate", "Theater of Pain", "Operation: Mechagon - Workshop", "The MOTHERLODE!!" }
-    local dungeonDropdown = CreateFrame("Frame", "DungeonDropdown", form, "UIDropDownMenuTemplate")
-    dungeonDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 180, -30)
-    UIDropDownMenu_SetWidth(dungeonDropdown, 120)
-
-    local niveauxCle = {} -- Liste des niveaux de clé de 0 à ..
-    for i = 0, 20 do
-        table.insert(niveauxCle, "+" .. i)
-    end
-
-    local niveauDropdown = CreateFrame("Frame", "NiveauDropdown", form, "UIDropDownMenuTemplate")
-    niveauDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 330, -30)
-    UIDropDownMenu_SetWidth(niveauDropdown, 42)
-
-    local raidSaison = { "Liberation of Undermine" }
-    local raidDropdown = CreateFrame("Frame", "RaidDropdown", form, "UIDropDownMenuTemplate")
-    raidDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", -10, -85)
-    UIDropDownMenu_SetWidth(raidDropdown, 150)
-
-    local diffycultesRaid = { "Normal", "Héroïque", "Mythique" }
-    local difficultyDropdown = CreateFrame("Frame", "DifficultyDropdown", form, "UIDropDownMenuTemplate")
-    difficultyDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 180, -85)
-    UIDropDownMenu_SetWidth(difficultyDropdown, 80)
-
-    CreateLabel(form, "Type d'annonce :", 350, -65)
-    CreateLabel(form, "Nom client :", 10, -10)
-    CreateLabel(form, "Donjon :", 200, -10)
-    CreateLabel(form, "Niveau clé :", 350, -10)
-    CreateLabel(form, "Raid :", 10, -65)
-    CreateLabel(form, "Difficulté :", 200, -65)
-    CreateLabel(form, "Prix :", 430, -10)
-    
-    local clientInput = CreateFrame("EditBox", nil, form, "InputBoxTemplate")
-    clientInput:SetSize(150, 25)
-    clientInput:SetPoint("TOPLEFT", form, "TOPLEFT", 15, -30)
-    clientInput:SetAutoFocus(false)
-
-    local priceInput = CreateFrame("EditBox", nil, form, "InputBoxTemplate")
-    priceInput:SetSize(80, 25)
-    priceInput:SetPoint("TOPLEFT", form, "TOPLEFT", 435, -30)
-    priceInput:SetAutoFocus(false)
-    priceInput:SetNumeric(true)
-
-    -- Initialisation des menus déroulants
-    UIDropDownMenu_Initialize(typeDropdown, function(self, level, menuList)
-        for i, typeName in ipairs(types) do
-            local info = UIDropDownMenu_CreateInfo()
-            info.text = typeName
-            info.checked = (UIDropDownMenu_GetText(typeDropdown) == i)
-            info.func = function()
-                UIDropDownMenu_SetSelectedID(typeDropdown, i)
-                UpdateFormVisibility(type)
+            local function AddHeaderText(text, width, x)
+                local fs = header:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+                fs:SetPoint("LEFT", header, "LEFT", x, 0)
+                fs:SetWidth(width)
+                fs:SetJustifyH("LEFT")
+                fs:SetText(text)
             end
-            UIDropDownMenu_AddButton(info)
-        end
-    end)
 
-    UIDropDownMenu_Initialize(dungeonDropdown, function(self, level, menuList)
-        for i, donjon in ipairs(donjonsSaison) do
-            local info = UIDropDownMenu_CreateInfo()
-            info.text = donjon
-            info.checked = (UIDropDownMenu_GetText(dungeonDropdown) == donjon)
-            info.func = function()
-                UIDropDownMenu_SetSelectedID(dungeonDropdown, i)
+            AddHeaderText("Type :", 50, 0)
+            AddHeaderText("Détail :", 150, 60)
+            AddHeaderText("Adv. :", 80, 210)
+            AddHeaderText("Prix :", 70, 300)
+            AddHeaderText("Statut :", 70, 380)
+            AddHeaderText("Client :", 80, 460)
+
+            -- ScrollFrame : liste des clés/raid en cours
+            local scrollFrame = CreateFrame("ScrollFrame", nil, tab, "UIPanelScrollFrameTemplate")
+            scrollFrame:SetPoint("TOPLEFT", 10, -30) -- en haut à gauche du tab
+            scrollFrame:SetPoint("BOTTOMRIGHT", -30, 165) -- réduit pour laisser place en bas
+
+            local content = CreateFrame("Frame", nil, scrollFrame)
+            content:SetSize(1, 1)
+            scrollFrame:SetScrollChild(content)
+
+            BM.tabs["AdvertisingScroll"] = scrollFrame
+            BM.tabs["AdvertisingContent"] = content
+            BM.tabs["AdvertisingHeader"] = header
+
+            -- Fenêtre création clé/raid en bas
+            local form = CreateFrame("Frame", nil, tab)
+            form:SetSize(560, 150)
+            form:SetPoint("BOTTOMLEFT", 10, 10)  -- en bas à gauche
+            form.bg = form:CreateTexture(nil, "BACKGROUND")
+            form.bg:SetAllPoints()
+            form.bg:SetColorTexture(0.15, 0.15, 0.15, 0.8)
+
+            local CreateLabel = function(parent, text, x, y)
+                local label = parent:CreateFontString(nil, "OVERLAY", "GameFontNormal")
+                label:SetPoint("TOPLEFT", parent, "TOPLEFT", x, y)
+                label:SetText(text)
+                return label
             end
-            UIDropDownMenu_AddButton(info)
-        end
-    end)
 
-    UIDropDownMenu_Initialize(niveauDropdown, function(self, level, menuList)
-        for i, niveau in ipairs(niveauxCle) do
-            local info = UIDropDownMenu_CreateInfo()
-            info.text = niveau
-            info.checked = (UIDropDownMenu_GetText(niveauDropdown) == niveau)
-            info.func = function()
-                UIDropDownMenu_SetSelectedID(niveauDropdown, i)
+            -- Menus déroulants et champs de saisie
+            local types = { "Donjon", "Raid" }
+            local typeDropdown = CreateFrame("Frame", "TypeDropdown", form, "UIDropDownMenuTemplate")
+            typeDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 330, -85)
+            UIDropDownMenu_SetWidth(typeDropdown, 60)
+
+            local donjonsSaison = { "Darkflame Cleft", "Cinderbrew Meadery", "The Rookery", "Priory of the Sacred Flame", "Operation: Floodgate", "Theater of Pain", "Operation: Mechagon - Workshop", "The MOTHERLODE!!" }
+            local dungeonDropdown = CreateFrame("Frame", "DungeonDropdown", form, "UIDropDownMenuTemplate")
+            dungeonDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 180, -30)
+            UIDropDownMenu_SetWidth(dungeonDropdown, 120)
+
+            local niveauxCle = {} -- Liste des niveaux de clé de 0 à ..
+            for i = 0, 20 do
+                table.insert(niveauxCle, "+" .. i)
             end
-            UIDropDownMenu_AddButton(info)
-        end
-    end)
 
-    UIDropDownMenu_Initialize(raidDropdown, function(self, level, menuList)
-        for i, raid in ipairs(raidSaison) do
-            local info = UIDropDownMenu_CreateInfo()
-            info.text = raid
-            info.checked = (UIDropDownMenu_GetText(raidDropdown) == raid)
-            info.func = function()
-                UIDropDownMenu_SetSelectedID(raidDropdown, i)
+            local niveauDropdown = CreateFrame("Frame", "NiveauDropdown", form, "UIDropDownMenuTemplate")
+            niveauDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 330, -30)
+            UIDropDownMenu_SetWidth(niveauDropdown, 42)
+
+            local raidSaison = { "Liberation of Undermine" }
+            local raidDropdown = CreateFrame("Frame", "RaidDropdown", form, "UIDropDownMenuTemplate")
+            raidDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", -10, -85)
+            UIDropDownMenu_SetWidth(raidDropdown, 150)
+
+            local diffycultesRaid = { "Normal", "Héroïque", "Mythique" }
+            local difficultyDropdown = CreateFrame("Frame", "DifficultyDropdown", form, "UIDropDownMenuTemplate")
+            difficultyDropdown:SetPoint("TOPLEFT", form, "TOPLEFT", 180, -85)
+            UIDropDownMenu_SetWidth(difficultyDropdown, 80)
+
+            CreateLabel(form, "Type d'annonce :", 350, -65)
+            CreateLabel(form, "Nom client :", 10, -10)
+            CreateLabel(form, "Donjon :", 200, -10)
+            CreateLabel(form, "Niveau clé :", 350, -10)
+            CreateLabel(form, "Raid :", 10, -65)
+            CreateLabel(form, "Difficulté :", 200, -65)
+            CreateLabel(form, "Prix :", 430, -10)
+            
+            local clientInput = CreateFrame("EditBox", nil, form, "InputBoxTemplate")
+            clientInput:SetSize(150, 25)
+            clientInput:SetPoint("TOPLEFT", form, "TOPLEFT", 15, -30)
+            clientInput:SetAutoFocus(false)
+
+            local priceInput = CreateFrame("EditBox", nil, form, "InputBoxTemplate")
+            priceInput:SetSize(80, 25)
+            priceInput:SetPoint("TOPLEFT", form, "TOPLEFT", 435, -30)
+            priceInput:SetAutoFocus(false)
+            priceInput:SetNumeric(true)
+
+            -- Initialisation des menus déroulants
+            UIDropDownMenu_Initialize(typeDropdown, function(self, level, menuList)
+                for i, typeName in ipairs(types) do
+                    local info = UIDropDownMenu_CreateInfo()
+                    info.text = typeName
+                    info.checked = (UIDropDownMenu_GetText(typeDropdown) == i)
+                    info.func = function()
+                        UIDropDownMenu_SetSelectedID(typeDropdown, i)
+                        UpdateFormVisibility(type)
+                    end
+                    UIDropDownMenu_AddButton(info)
+                end
+            end)
+
+            UIDropDownMenu_Initialize(dungeonDropdown, function(self, level, menuList)
+                for i, donjon in ipairs(donjonsSaison) do
+                    local info = UIDropDownMenu_CreateInfo()
+                    info.text = donjon
+                    info.checked = (UIDropDownMenu_GetText(dungeonDropdown) == donjon)
+                    info.func = function()
+                        UIDropDownMenu_SetSelectedID(dungeonDropdown, i)
+                    end
+                    UIDropDownMenu_AddButton(info)
+                end
+            end)
+
+            UIDropDownMenu_Initialize(niveauDropdown, function(self, level, menuList)
+                for i, niveau in ipairs(niveauxCle) do
+                    local info = UIDropDownMenu_CreateInfo()
+                    info.text = niveau
+                    info.checked = (UIDropDownMenu_GetText(niveauDropdown) == niveau)
+                    info.func = function()
+                        UIDropDownMenu_SetSelectedID(niveauDropdown, i)
+                    end
+                    UIDropDownMenu_AddButton(info)
+                end
+            end)
+
+            UIDropDownMenu_Initialize(raidDropdown, function(self, level, menuList)
+                for i, raid in ipairs(raidSaison) do
+                    local info = UIDropDownMenu_CreateInfo()
+                    info.text = raid
+                    info.checked = (UIDropDownMenu_GetText(raidDropdown) == raid)
+                    info.func = function()
+                        UIDropDownMenu_SetSelectedID(raidDropdown, i)
+                    end
+                    UIDropDownMenu_AddButton(info)
+                end
+            end)
+
+            UIDropDownMenu_Initialize(difficultyDropdown, function(self, level, menuList)
+                for i, diff in ipairs(diffycultesRaid) do
+                    local info = UIDropDownMenu_CreateInfo()
+                    info.text = diff
+                    info.checked = (UIDropDownMenu_GetText(difficultyDropdown) == diff)
+                    info.func = function()
+                        UIDropDownMenu_SetSelectedID(difficultyDropdown, i)
+                    end
+                    UIDropDownMenu_AddButton(info)
+                end
+            end)
+
+            -- gestion de la visibilité des champs en fonction du type sélectionné
+            function UpdateFormVisibility()
+                local typeName = UIDropDownMenu_GetText(typeDropdown)
+                if typeName == "Donjon" then
+                    raidDropdown:Hide()
+                    difficultyDropdown:Hide()
+                    dungeonDropdown:Show()
+                    niveauDropdown:Show()
+                else
+                    raidDropdown:Show()
+                    difficultyDropdown:Show()
+                    dungeonDropdown:Hide()
+                    niveauDropdown:Hide()
+                end
             end
-            UIDropDownMenu_AddButton(info)
-        end
-    end)
 
-    UIDropDownMenu_Initialize(difficultyDropdown, function(self, level, menuList)
-        for i, diff in ipairs(diffycultesRaid) do
-            local info = UIDropDownMenu_CreateInfo()
-            info.text = diff
-            info.checked = (UIDropDownMenu_GetText(difficultyDropdown) == diff)
-            info.func = function()
-                UIDropDownMenu_SetSelectedID(difficultyDropdown, i)
-            end
-            UIDropDownMenu_AddButton(info)
-        end
-    end)
+            UIDropDownMenu_SetSelectedID(typeDropdown, 1)
+            UIDropDownMenu_SetText(typeDropdown, types[1])
 
-    -- gestion de la visibilité des champs en fonction du type sélectionné
-    function UpdateFormVisibility()
-        local typeName = UIDropDownMenu_GetText(typeDropdown)
-        if typeName == "Donjon" then
-            raidDropdown:Hide()
-            difficultyDropdown:Hide()
-            dungeonDropdown:Show()
-            niveauDropdown:Show()
-        else
-            raidDropdown:Show()
-            difficultyDropdown:Show()
-            dungeonDropdown:Hide()
-            niveauDropdown:Hide()
-        end
-    end
+            UIDropDownMenu_SetSelectedID(dungeonDropdown, 1)
+            UIDropDownMenu_SetText(dungeonDropdown, donjonsSaison[1])
 
-UIDropDownMenu_SetSelectedID(typeDropdown, 1)
-UIDropDownMenu_SetText(typeDropdown, types[1])
+            UIDropDownMenu_SetSelectedID(niveauDropdown, 1)
+            UIDropDownMenu_SetText(niveauDropdown, niveauxCle[1])
 
-UIDropDownMenu_SetSelectedID(dungeonDropdown, 1)
-UIDropDownMenu_SetText(dungeonDropdown, donjonsSaison[1])
+            UIDropDownMenu_SetSelectedID(raidDropdown, 1)
+            UIDropDownMenu_SetText(raidDropdown, raidSaison[1])
 
-UIDropDownMenu_SetSelectedID(niveauDropdown, 1)
-UIDropDownMenu_SetText(niveauDropdown, niveauxCle[1])
+            UIDropDownMenu_SetSelectedID(difficultyDropdown, 1)
+            UIDropDownMenu_SetText(difficultyDropdown, diffycultesRaid[1])
 
-UIDropDownMenu_SetSelectedID(raidDropdown, 1)
-UIDropDownMenu_SetText(raidDropdown, raidSaison[1])
+            UpdateFormVisibility()
 
-UIDropDownMenu_SetSelectedID(difficultyDropdown, 1)
-UIDropDownMenu_SetText(difficultyDropdown, diffycultesRaid[1])
+            -- Bouton pour créer une annonce
+            local createButton = CreateFrame("Button", nil, form, "UIPanelButtonTemplate")
+            createButton:SetSize(100, 25)
+            createButton:SetPoint("TOPLEFT", form, "TOPLEFT", 220, -120)
+            createButton:SetText("Créer clé/raid")
 
-UpdateFormVisibility()
+            createButton:SetScript("OnClick", function()
+                local client = clientInput:GetText()
+                local prix = tonumber(priceInput:GetText())
+                local typeSelection = UIDropDownMenu_GetText(typeDropdown)
+                print("DEBUG - typeSelection brut = '" .. tostring(typeSelection) .. "'")
 
- -- Bouton pour créer une annonce
-    local createButton = CreateFrame("Button", nil, form, "UIPanelButtonTemplate")
-    createButton:SetSize(100, 25)
-    createButton:SetPoint("TOPLEFT", form, "TOPLEFT", 220, -120)
-    createButton:SetText("Créer clé/raid")
+                if client == "" or not prix or prix <= 0 then
+                    print("BoostMaster : Veuillez remplir tous les champs correctement.")
+                    return
+                end
 
-    createButton:SetScript("OnClick", function()
-        local client = clientInput:GetText()
-        local prix = tonumber(priceInput:GetText())
-        local typeSelection = UIDropDownMenu_GetText(typeDropdown)
-        print("DEBUG - typeSelection brut = '" .. tostring(typeSelection) .. "'")
+                local ts = string.lower(typeSelection or "")
+                ts = ts:gsub("%s+", "") -- Enlève les espaces
 
-    if client == "" or not prix or prix <= 0 then
-        print("BoostMaster : Veuillez remplir tous les champs correctement.")
-        return
-    end
+                local typeAnnonce, detailAnnonce
 
-    local ts = string.lower(typeSelection or "")
-    ts = ts:gsub("%s+", "") -- Enlève les espaces
+                if ts == "donjon" then
+                    local donjon = UIDropDownMenu_GetText(dungeonDropdown)
+                    local niveau = UIDropDownMenu_GetText(niveauDropdown)
+                    print("DEBUG - Donjon:", donjon, "Niveau:", niveau)
 
-    local typeAnnonce, detailAnnonce
+                    if not donjon or not niveau then
+                        print("BoostMaster : Veuillez sélectionner un donjon et un niveau de clé.")
+                        return
+                    end
 
-    if ts == "donjon" then
-        local donjon = UIDropDownMenu_GetText(dungeonDropdown)
-        local niveau = UIDropDownMenu_GetText(niveauDropdown)
-        print("DEBUG - Donjon:", donjon, "Niveau:", niveau)
+                    typeAnnonce = "Donjon"
+                    detailAnnonce = donjon .. " " .. niveau
+                    print("ajout d'une annonce de donjon:", client, donjon, niveau, prix)
 
-        if not donjon or not niveau then
-            print("BoostMaster : Veuillez sélectionner un donjon et un niveau de clé.")
-            return
-        end
+                elseif ts == "raid" then
+                    local raid = UIDropDownMenu_GetText(raidDropdown)
+                    local difficulty = UIDropDownMenu_GetText(difficultyDropdown)
+                    print("DEBUG - Raid:", raid, "Difficulté:", difficulty)
 
-        typeAnnonce = "Donjon"
-        detailAnnonce = donjon .. " " .. niveau
-        print("ajout d'une annonce de donjon:", client, donjon, niveau, prix)
+                    if not raid or not difficulty then
+                        print("BoostMaster : Veuillez sélectionner un raid et une difficulté.")
+                        return
+                    end
 
-    elseif ts == "raid" then
-        local raid = UIDropDownMenu_GetText(raidDropdown)
-        local difficulty = UIDropDownMenu_GetText(difficultyDropdown)
-        print("DEBUG - Raid:", raid, "Difficulté:", difficulty)
+                    typeAnnonce = "Raid"
+                    detailAnnonce = raid .. " " .. difficulty
+                    print("ajout d'une annonce de raid:", client, raid, difficulty, prix)
+                else
+                    print("BoostMaster : Type d'annonce non reconnu. Veuillez sélectionner Donjon ou Raid.")
+                    return
+                end
 
-        if not raid or not difficulty then
-            print("BoostMaster : Veuillez sélectionner un raid et une difficulté.")
-            return
-        end
+                -- ajout de l'annonce à la liste
+                table.insert(BM.advertisingData, {
+                    client = client,
+                    type = typeAnnonce,
+                    detail = detailAnnonce,
+                    price = prix,
+                    status = "En attente",
+                    advertiser = UnitName("player"), -- Nom du joueur qui crée l'annonce
+                })
 
-        typeAnnonce = "Raid"
-        detailAnnonce = raid .. " " .. difficulty
-        print("ajout d'une annonce de raid:", client, raid, difficulty, prix)
-    else
-        print("BoostMaster : Type d'annonce non reconnu. Veuillez sélectionner Donjon ou Raid.")
-        return
-    end
+                for i, entry in ipairs(BM.advertisingData) do
+                    print(i, entry.client, entry.type, entry.detail, entry.price)
+                end
 
-    -- ajout de l'annonce à la liste
-    table.insert(BM.advertisingData, {
-        client = client,
-        type = typeAnnonce,
-        detail = detailAnnonce,
-        price = prix,
-        status = "En attente",
-        advertiser = UnitName("player"), -- Nom du joueur qui crée l'annonce
-    })
+                -- Reset des champs
+                clientInput:SetText("")
+                priceInput:SetText("")
+                UIDropDownMenu_SetSelectedID(typeDropdown, 1)
+                UIDropDownMenu_SetSelectedID(dungeonDropdown, 1)
+                UIDropDownMenu_SetSelectedID(niveauDropdown, 1)
+                UIDropDownMenu_SetSelectedID(typeDropdown, 2)
+                UIDropDownMenu_SetSelectedID(raidDropdown, 1)
+                UIDropDownMenu_SetSelectedID(difficultyDropdown, 1)
 
-for i, entry in ipairs(BM.advertisingData) do
-    print(i, entry.client, entry.type, entry.detail, entry.price)
-end
+                UpdateFormVisibility()
 
-    -- Reset des champs
-    clientInput:SetText("")
-    priceInput:SetText("")
-    UIDropDownMenu_SetSelectedID(typeDropdown, 1)
-    UIDropDownMenu_SetSelectedID(dungeonDropdown, 1)
-    UIDropDownMenu_SetSelectedID(niveauDropdown, 1)
-    UIDropDownMenu_SetSelectedID(typeDropdown, 2)
-    UIDropDownMenu_SetSelectedID(raidDropdown, 1)
-    UIDropDownMenu_SetSelectedID(difficultyDropdown, 1)
+                BoostMaster:RefreshAdvertisingTab()
+            end)
 
-UpdateFormVisibility()
+            -- Ajout d'un popup pour personnaliser le message
+            StaticPopupDialogs["BOOSTMASTER_PERSONALIZE_MESSAGE"] = {
+                text = "Entrez votre message personnalisé :",
+                button1 = "OK",
+                button2 = "Annuler",
+                hasEditBox = true,
+                timeout = 0,
+                whileDead = true,
+                hideOnEscape = true,
+                preferredIndex = 3,
+                OnAccept = function(self)
+                    local text = self.editBox:GetText()
+                    BM.advertisingData.customMessage = text
+                    print("BoostMaster : Message personnalisé enregistré.")
+                end,
+                OnShow = function(self)
+                    self.editBox:SetText(BM.advertisingData.customMessage or "")
+                    self.editBox:SetFocus()
+                end,
+            }
 
-    BoostMaster:RefreshAdvertisingTab()
-end)
+            -- Conteneur pour boutons juste au-dessus du form
+            local btnContainer = CreateFrame("Frame", nil, tab)
+            btnContainer:SetSize(560, 60)
+            btnContainer:SetPoint("BOTTOMLEFT", 450, 10) 
 
-    -- Ajout d'un popup pour personnaliser le message
-    StaticPopupDialogs["BOOSTMASTER_PERSONALIZE_MESSAGE"] = {
-        text = "Entrez votre message personnalisé :",
-        button1 = "OK",
-        button2 = "Annuler",
-        hasEditBox = true,
-        timeout = 0,
-        whileDead = true,
-        hideOnEscape = true,
-        preferredIndex = 3,
-        OnAccept = function(self)
-            local text = self.editBox:GetText()
-            BM.advertisingData.customMessage = text
-            print("BoostMaster : Message personnalisé enregistré.")
-        end,
-        OnShow = function(self)
-            self.editBox:SetText(BM.advertisingData.customMessage or "")
-            self.editBox:SetFocus()
-        end,
-    }
+            -- Bouton personnaliser message
+            local personalizeBtn = CreateFrame("Button", nil, btnContainer, "UIPanelButtonTemplate")
+            personalizeBtn:SetSize(110, 25)
+            personalizeBtn:SetPoint("TOPLEFT", btnContainer, "TOPLEFT", 0, 0)
+            personalizeBtn:SetText("Personnaliser")
+            personalizeBtn:SetScript("OnClick", function()
+                StaticPopup_Show("BOOSTMASTER_PERSONALIZE_MESSAGE")
+            end)
 
-    -- Conteneur pour boutons juste au-dessus du form
-    local btnContainer = CreateFrame("Frame", nil, tab)
-    btnContainer:SetSize(560, 60)
-    btnContainer:SetPoint("BOTTOMLEFT", 450, 10) 
+            -- Bouton envoyer message dans le chat
+            local sendMsgBtn = CreateFrame("Button", nil, btnContainer, "UIPanelButtonTemplate")
+            sendMsgBtn:SetSize(110, 25)
+            sendMsgBtn:SetPoint("TOPLEFT", personalizeBtn, "BOTTOMLEFT", 0, -5)
+            sendMsgBtn:SetText("Envoyer message")
+            sendMsgBtn:SetScript("OnClick", function()
+                local predefinedMessages = BM.advertisingData.predefinedMessages or {}
+                local msg = BM.advertisingData.customMessage or predefinedMessages[1] or "Tarifs disponibles, contactez-moi !"
+                local editBox = ChatEdit_ChooseBoxForSend()
+                ChatEdit_InsertLink(editbox)
+                editBox:SetText(msg)
+                ChatEdit_SendText(editBox, 1) -- 1 pour envoyer dans le canal actuel
+                print("BoostMaster : Message envoyé dans le chat.")
+            end)
 
-    -- Bouton personnaliser message
-    local personalizeBtn = CreateFrame("Button", nil, btnContainer, "UIPanelButtonTemplate")
-    personalizeBtn:SetSize(110, 25)
-    personalizeBtn:SetPoint("TOPLEFT", btnContainer, "TOPLEFT", 0, 0)
-    personalizeBtn:SetText("Personnaliser")
-    personalizeBtn:SetScript("OnClick", function()
-        StaticPopup_Show("BOOSTMASTER_PERSONALIZE_MESSAGE")
-    end)
-
-    -- Bouton envoyer message dans le chat
-    local sendMsgBtn = CreateFrame("Button", nil, btnContainer, "UIPanelButtonTemplate")
-    sendMsgBtn:SetSize(110, 25)
-    sendMsgBtn:SetPoint("TOPLEFT", personalizeBtn, "BOTTOMLEFT", 0, -5)
-    sendMsgBtn:SetText("Envoyer message")
-    sendMsgBtn:SetScript("OnClick", function()
-        local predefinedMessages = BM.advertisingData.predefinedMessages or {}
-        local msg = BM.advertisingData.customMessage or predefinedMessages[1] or "Tarifs disponibles, contactez-moi !"
-        local editBox = ChatEdit_ChooseBoxForSend()
-        ChatEdit_InsertLink(editbox)
-        editBox:SetText(msg)
-        ChatEdit_SendText(editBox, 1) -- 1 pour envoyer dans le canal actuel
-        print("BoostMaster : Message envoyé dans le chat.")
-    end)
-
-    BoostMaster:RefreshAdvertisingTab()
+            BoostMaster:RefreshAdvertisingTab()
 
         elseif name == "Credits" then
             local creditText = [[
-BoostMaster Addon
-Développé par Puunkz
+            BoostMaster Addon
+            Développé par Puunkz
 
-- Gestion des boosts
-- Postulation rapide
-- Suivi du portefeuille
-- Annonces et communication
+            - Gestion des boosts
+            - Postulation rapide
+            - Suivi du portefeuille
+            - Annonces et communication
 
-Merci d'utiliser BoostMaster
-            ]]
+            Merci d'utiliser BoostMaster !
+                    ]]
 
             local textLabel = tab:CreateFontString(nil, "OVERLAY", "GameFontNormal")
             textLabel:SetPoint("TOPLEFT", 20, -30)
